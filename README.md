@@ -10,8 +10,8 @@ MindWork AI is the GitHub organization behind [AI Studio](https://github.com/Min
 
 [AI Studio](https://github.com/MindWorkAI/AI-Studio) is a desktop app for daily work with LLMs. The app is available for macOS, Windows, and Linux, and can be used for free (including for commercial work). However, we appreciate donations.
 
-![MindWork AI Studio - Home](documentation/AI%20Studio%20Home.png)
-![MindWork AI Studio - Assistants](documentation/AI%20Studio%20Assistants.png)
+![MindWork AI Studio - Home](media/AI%20Studio%20Home.png)
+![MindWork AI Studio - Assistants](media/AI%20Studio%20Assistants.png)
 
 
 ## EDI - (E)xternal (D)ata AP(I)
