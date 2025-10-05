@@ -23,4 +23,4 @@ When you want to integrate your own local data into AI Studio, you don't need an
 Links:
 - [ERI repository with example implementation in .NET / C#](https://github.com/MindWorkAI/ERI)
 - [Interactive documentation aka Swagger UI](swagger-ui.html)
-- [ERI specification](eri-specification.json), which you could use with tools like [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator).
+- [ERI specification](v1.0-production.json), which you could use with tools like [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator).

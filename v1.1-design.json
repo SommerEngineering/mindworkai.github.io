@@ -1,0 +1,799 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "ERI - (E)xternal (R)etrieval (I)nterface ⸺ 1.1-design",
+    "description": "This API serves as a contract between LLM tools like AI Studio and any external data sources for RAG\n(retrieval-augmented generation). The tool, e.g., AI Studio acts as the client (the augmentation and\ngeneration parts) and the data sources act as the server (the retrieval part). The data\nsources implement some form of data retrieval and return a suitable context to the LLM tool.\nThe LLM tool, in turn, handles the integration of appropriate LLMs (augmentation & generation).\nData sources can be document or graph databases, or even a file system, for example. They\nwill likely implement an appropriate retrieval process by using some kind of embedding.\nHowever, this API does not inherently require any embedding, as data processing is\nimplemented decentralized by the data sources.\n\nThe client expects that all fields in the JSON responses from an ERI server are named according\nto camel case or Pascal case conventions. The client's JSON objects for requests use camel case\nfor the field names.",
+    "version": "1.1-design"
+  },
+  "paths": {
+    "/auth/methods": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Get the available authentication methods.",
+        "description": "Get the available authentication methods.<br/><br/>\n\nThis call requires no authentication.",
+        "operationId": "GetAuthMethodsV1.0+",
+        "parameters": [
+          {
+            "name": "eri-version",
+            "in": "header",
+            "description": "The API version to use. This must be set to '1.1-design'.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1.1-design"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AuthScheme"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Authenticate with the ERI server to get a token for further requests.",
+        "description": "Authenticate with the data source to get a token for further requests.<br/><br/>\n\nThis call requires no authentication.",
+        "operationId": "AuthenticateV1.0+",
+        "parameters": [
+          {
+            "name": "authMethod",
+            "in": "query",
+            "description": "The authentication method to use.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/AuthMethod"
+            }
+          },
+          {
+            "name": "eri-version",
+            "in": "header",
+            "description": "The API version to use. This must be set to '1.1-design'.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1.1-design"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dataSource": {
+      "get": {
+        "tags": ["Data Source"],
+        "summary": "Get the data source information for the given data source ID.",
+        "description": "Get information about a data source.",
+        "operationId": "GetDataSourceInfoV1.1+",
+        "parameters": [
+          {
+            "name": "dataSourceId",
+            "in": "query",
+            "description": "The data source ID for which to get the information.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "eri-version",
+            "in": "header",
+            "description": "The API version to use. This must be set to '1.1-design'.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1.1-design"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataSourceInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dataSource/list": {
+      "get": {
+        "tags": ["Data Source"],
+        "summary": "Get a list of available data sources for this ERI server.",
+        "description": "Get a list of available data sources.",
+        "operationId": "GetDataSourceListV1.1+",
+        "parameters": [
+          {
+            "name": "eri-version",
+            "in": "header",
+            "description": "The API version to use. This must be set to '1.1-design'.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1.1-design"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DataSourceList"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/embedding/info": {
+      "get": {
+        "tags": ["Embedding"],
+        "summary": "Get information about the embedding(s) used by the specified data source.",
+        "description": "Get information about the embedding(s) used by a specific data source.",
+        "operationId": "GetEmbeddingInfoV1.1+",
+        "parameters": [
+          {
+            "name": "dataSourceId",
+            "in": "query",
+            "description": "The data source ID for which to get the embedding information.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "eri-version",
+            "in": "header",
+            "description": "The API version to use. This must be set to '1.1-design'.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1.1-design"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EmbeddingInfo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/server": {
+      "get": {
+        "tags": ["ERI Server"],
+        "summary": "Get information about the ERI server.",
+        "description": "Get information about the ERI server.<br/><br/>\n\nThis call requires no authentication.",
+        "operationId": "GetServerInfoV1.1+",
+        "parameters": [
+          {
+            "name": "eri-version",
+            "in": "header",
+            "description": "The API version to use. This must be set to '1.1-design'.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1.1-design"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/retrieval/info": {
+      "get": {
+        "tags": ["Retrieval"],
+        "summary": "Get information about the retrieval processes implemented by the specified data source.",
+        "description": "Get information about the retrieval processes implemented by the specified data source.",
+        "operationId": "GetRetrievalInfoV1.1+",
+        "parameters": [
+          {
+            "name": "dataSourceId",
+            "in": "query",
+            "description": "The data source ID for which to get the retrieval information.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "eri-version",
+            "in": "header",
+            "description": "The API version to use. This must be set to '1.1-design'.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1.1-design"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RetrievalInfo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/retrieval": {
+      "post": {
+        "tags": ["Retrieval"],
+        "summary": "Retrieve information from the specified data source.",
+        "description": "Retrieve information from the specified data source.",
+        "operationId": "RetrieveV1.1",
+        "parameters": [
+          {
+            "name": "dataSourceId",
+            "in": "query",
+            "description": "The data source ID from which to retrieve the information.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "eri-version",
+            "in": "header",
+            "description": "The API version to use. This must be set to '1.1-design'.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1.1-design"
+          }
+        ],
+        "requestBody": {
+          "description": "The retrieval request.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RetrievalRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Context"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/security/requirements": {
+      "get": {
+        "tags": ["Security"],
+        "summary": "Get the security requirements for this ERI server.",
+        "description": "Represents the security requirements for this ERI server.<br/><br/>\n \nThe list of forbidden providers takes precedence over the list of allowed providers.\nIf a provider is in both lists, it is considered forbidden. Example: when you disallow all Asian\nproviders and allow all providers, the result is that all non-Asian providers are allowed.<br/><br/>\n\nWhen both lists are empty, it means that all providers are allowed.<br/><br/>\n\nYou can use the allowed IP ranges to restrict access to LLM providers from specific IP ranges.\nIf the list is empty, there are no restrictions on IP ranges. You can use CIDR notation to specify\nIP ranges (e.g., 192.168.1.0/30), single IP addresses (e.g., 192.168.0.1), or specify a range using\na start and end IP address (e.g., 10.0.0.1-10.0.0.255).<br/><br/>\n\nThis is useful if you want to allow access to LLM providers only from specific networks,\ne.g., your corporate network or a VPN. In practice, this means that only self-hosted\nor on-premise LLM providers can be used, as public LLM providers do not publish\ntheir IP addresses. You should use this feature in combination with allowed providers\nset to self-hosted providers only.",
+        "operationId": "GetSecurityRequirementsV1.1+",
+        "parameters": [
+          {
+            "name": "eri-version",
+            "in": "header",
+            "description": "The API version to use. This must be set to '1.1-design'.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1.1-design"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SecurityRequirements"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AuthField": {
+        "enum": ["NONE", "USERNAME", "PASSWORD", "TOKEN", "KERBEROS_TICKET"],
+        "type": "string",
+        "description": "An authentication field.\n\n* `NONE` - No authentication field.\n* `USERNAME` - The username field.\n* `PASSWORD` - The password field.\n* `TOKEN` - The authentication token field.\n* `KERBEROS_TICKET` - The Kerberos ticket field.\n"
+      },
+      "AuthFieldMapping": {
+        "type": "object",
+        "properties": {
+          "authField": {
+            "$ref": "#/components/schemas/AuthField"
+          },
+          "fieldName": {
+            "type": "string",
+            "description": "The field name in the authentication request.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "The mapping between an AuthField and the field name in the authentication request."
+      },
+      "AuthMethod": {
+        "enum": ["NONE", "KERBEROS", "USERNAME_PASSWORD", "TOKEN"],
+        "type": "string",
+        "description": "An authentication method.\n\n* `NONE` - No authentication method.\n* `KERBEROS` - Kerberos authentication.\n* `USERNAME_PASSWORD` - Username and password authentication.\n* `TOKEN` - Token-based authentication.\n"
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "True, when the authentication was successful."
+          },
+          "token": {
+            "type": "string",
+            "description": "The token to use for further requests.",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "description": "When the authentication was not successful, this contains the reason.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "The response to an authentication request."
+      },
+      "AuthScheme": {
+        "type": "object",
+        "properties": {
+          "authMethod": {
+            "$ref": "#/components/schemas/AuthMethod"
+          },
+          "authFieldMappings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuthFieldMapping"
+            },
+            "description": "A list of field mappings for the authentication method. The client must know,\n            e.g., how the password field is named in the request.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Describes one authentication scheme for this data source."
+      },
+      "ChatThread": {
+        "type": "object",
+        "properties": {
+          "contentBlocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContentBlock"
+            },
+            "description": "The content blocks in this chat thread.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "A chat thread, which is a list of content blocks."
+      },
+      "ContentBlock": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "The content of the block. Remember that images and other media are base64 encoded.",
+            "nullable": true
+          },
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ContentType"
+          }
+        },
+        "additionalProperties": false,
+        "description": "A block of content of a chat thread."
+      },
+      "ContentType": {
+        "enum": [
+          "NONE",
+          "UNKNOWN",
+          "TEXT",
+          "IMAGE",
+          "VIDEO",
+          "AUDIO",
+          "SPEECH"
+        ],
+        "type": "string",
+        "description": "The type of content.\n\n"
+      },
+      "Context": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the source, e.g., a document name, database name,\n            collection name, etc.",
+            "nullable": true
+          },
+          "category": {
+            "type": "string",
+            "description": "What are the contents of the source? For example, is it a\n            dictionary, a book chapter, business concept, a paper, etc.",
+            "nullable": true
+          },
+          "path": {
+            "type": "string",
+            "description": "The path to the content, e.g., a URL, a file path, a path in a\n            graph database, etc.",
+            "nullable": true
+          },
+          "confidenceScore": {
+            "type": "number",
+            "description": "An optional confidence score between 0 and 1 indicating\n            the confidence of the match. A higher score indicates higher confidence.",
+            "format": "float",
+            "nullable": true
+          },
+          "type": {
+            "$ref": "#/components/schemas/ContentType"
+          },
+          "matchedContent": {
+            "type": "string",
+            "description": "The content that matched the user prompt. For text, you\n            return the matched text and, e.g., three words before and after it.",
+            "nullable": true
+          },
+          "surroundingContent": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The surrounding content of the matched content.\n            For text, you may return, e.g., one sentence or paragraph before and after\n            the matched content.",
+            "nullable": true
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Links to related content, e.g., links to Wikipedia articles,\n            links to sources, etc.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Matching context returned by the data source as a result of a retrieval request."
+      },
+      "DataSourceInfo": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the data source, e.g., \"Internal Organization Documents.\"",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "description": "A short description of the data source. What kind of data does it contain?\n            What is the data source used for?",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Information about the data source."
+      },
+      "DataSourceList": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The id of this data source. Use this index to refer to the data source in other API calls.",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the data source, e.g., \"Internal Organization Documents.\"",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Briefly describes a data source."
+      },
+      "EmbeddingInfo": {
+        "type": "object",
+        "properties": {
+          "embeddingType": {
+            "type": "string",
+            "description": "What kind of embedding is used. For example, \"Transformer Embedding,\" \"Contextual Word\n            Embedding,\" \"Graph Embedding,\" etc.",
+            "nullable": true
+          },
+          "embeddingName": {
+            "type": "string",
+            "description": "Name the embedding used. This can be a library, a framework, or the name of the used\n            algorithm.",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "description": "A short description of the embedding. Describe what the embedding is doing.",
+            "nullable": true
+          },
+          "usedWhen": {
+            "type": "string",
+            "description": "Describe when the embedding is used. For example, when the user prompt contains certain\n            keywords, or anytime?",
+            "nullable": true
+          },
+          "link": {
+            "type": "string",
+            "description": "A link to the embedding's documentation or the source code. Might be null.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents information about the used embedding for this data source. The purpose of this information is to give the\ninterested user an idea of what kind of embedding is used and what it does."
+      },
+      "Provider": {
+        "enum": [
+          "SELF_HOSTED",
+          "ALL",
+          "ALL_USA",
+          "ALL_ASIA",
+          "ALL_EU",
+          "OPEN_AI",
+          "PERPLEXITY",
+          "MISTRAL",
+          "ANTHROPIC",
+          "GOOGLE",
+          "X_AI",
+          "DEEP_SEEK",
+          "ALIBABA",
+          "HUGGING_FACE",
+          "GROQ",
+          "FIREWORKS",
+          "HELMHOLTZ",
+          "GWDG"
+        ],
+        "type": "string",
+        "description": "Known LLM providers.\n\n"
+      },
+      "RetrievalInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "A unique identifier for the retrieval process. This can be a GUID, a unique name, or an increasing integer.",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the retrieval process, e.g., \"Keyword-Based Wikipedia Article Retrieval\".",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "description": "A short description of the retrieval process. What kind of retrieval process is it?",
+            "nullable": true
+          },
+          "link": {
+            "type": "string",
+            "description": "A link to the retrieval process's documentation, paper, Wikipedia article, or the source code. Might be null.",
+            "nullable": true
+          },
+          "parametersDescription": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "A dictionary that describes the parameters of the retrieval process. The key is the parameter name,\n            and the value is a description of the parameter. Although each parameter will be sent as a string, the description should indicate the\n            expected type and range, e.g., 0.0 to 1.0 for a float parameter.",
+            "nullable": true
+          },
+          "embeddings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmbeddingInfo"
+            },
+            "description": "A list of embeddings used in this retrieval process. It might be empty in case no embedding is used.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Information about a retrieval process, which this data source implements."
+      },
+      "RetrievalRequest": {
+        "type": "object",
+        "properties": {
+          "latestUserPrompt": {
+            "type": "string",
+            "description": "The latest user prompt that AI Studio received.",
+            "nullable": true
+          },
+          "latestUserPromptType": {
+            "$ref": "#/components/schemas/ContentType"
+          },
+          "thread": {
+            "$ref": "#/components/schemas/ChatThread"
+          },
+          "retrievalProcessId": {
+            "type": "string",
+            "description": "Optional. The ID of the retrieval process that the data source should use.\n            When null, the data source chooses an appropriate retrieval process. Selecting a retrieval process is optional\n            for AI Studio users. Most users do not specify a retrieval process.",
+            "nullable": true
+          },
+          "parameters": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "A dictionary of parameters that the data source should use for the retrieval process.\n            Although each parameter will be sent as a string, the retrieval process specifies the expected type and range.",
+            "nullable": true
+          },
+          "maxMatches": {
+            "type": "integer",
+            "description": "The maximum number of matches that the data source should return. AI Studio uses\n            any value below 1 to indicate that the data source should return as many matches as appropriate.",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The retrieval request sent by AI Studio."
+      },
+      "Role": {
+        "enum": ["NONE", "UNKNOWN", "SYSTEM", "USER", "AI", "AGENT"],
+        "type": "string",
+        "description": "Possible roles of a content block in a chat thread.\n\n* `NONE` - No role specified.\n* `UNKNOWN` - Role is unknown.\n* `SYSTEM` - System role, e.g., instructions to the AI model.\n* `USER` - User role, e.g., user input.\n* `AI` - AI role, e.g., AI-generated response.\n* `AGENT` - Content generated by an AI agent.\n"
+      },
+      "SecurityRequirements": {
+        "type": "object",
+        "properties": {
+          "forbiddenProviders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Provider"
+            },
+            "description": "The list of forbidden providers.",
+            "nullable": true
+          },
+          "allowedProviders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Provider"
+            },
+            "description": "The list of allowed providers.",
+            "nullable": true
+          },
+          "allowedIPRanges": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The list of allowed IP ranges for LLM providers.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents the security requirements for this ERI server.\n\n\n\nThe list of forbidden providers takes precedence over the list of allowed providers.\nIf a provider is in both lists, it is considered forbidden. Example: when you disallow all Asian\nproviders and allow all providers, the result is that all non-Asian providers are allowed.\n\n\n            \nWhen both lists are empty, it means that all providers are allowed.\n\n\n            \nYou can use the allowed IP ranges to restrict access to LLM providers from specific IP ranges.\nIf the list is empty, there are no restrictions on IP ranges. You can use CIDR notation to specify\nIP ranges (e.g., 192.168.1.0/30), single IP addresses (e.g., 192.168.0.1), or specify a range using\na start and end IP address (e.g., 10.0.0.1-10.0.0.255).\n\n\n            \nThis is useful if you want to allow access to LLM providers only from specific networks,\ne.g., your corporate network or a VPN. In practice, this means that only self-hosted\nor on-premise LLM providers can be used, as public LLM providers do not publish\ntheir IP addresses. You should use this feature in combination with allowed providers\nset to self-hosted providers only."
+      },
+      "ServerInfo": {
+        "type": "object",
+        "properties": {
+          "serverName": {
+            "type": "string",
+            "description": "The name of the server.",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "description": "A short description of the server.",
+            "nullable": true
+          },
+          "contactName": {
+            "type": "string",
+            "description": "The name of the contact person for the server.",
+            "nullable": true
+          },
+          "contactEmail": {
+            "type": "string",
+            "description": "The email address of the contact person for the server.",
+            "nullable": true
+          },
+          "termsOfServiceUrl": {
+            "type": "string",
+            "description": "A URL to the terms of service for the server.",
+            "nullable": true
+          },
+          "privacyPolicyUrl": {
+            "type": "string",
+            "description": "A URL to the privacy policy for the server.",
+            "nullable": true
+          },
+          "uhdUrl": {
+            "type": "string",
+            "description": "A URL to the user help desk solution for the server.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Information about the ERI server."
+      }
+    },
+    "securitySchemes": {
+      "ERI_Token": {
+        "type": "apiKey",
+        "description": "Enter the ERI token yielded by the authentication process at /auth.",
+        "name": "token",
+        "in": "header"
+      }
+    }
+  },
+  "security": [
+    {
+      "ERI_Token": []
+    }
+  ]
+}
