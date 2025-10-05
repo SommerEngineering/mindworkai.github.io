@@ -1,19 +1,27 @@
-window.onload = function() {
+window.onload = function () {
   //<editor-fold desc="Changeable Configuration Block">
 
   // the following lines will be replaced by docker/configurator, when it runs in a docker-container
   window.ui = SwaggerUIBundle({
-    url: "eri-specification.json",
-    dom_id: '#swagger-ui',
+    urls: [
+      {
+        url: "v1.0-production.json",
+        name: "v1.0-production",
+      },
+      {
+        url: "v1.1-design.json",
+        name: "v1.1-design",
+      },
+      {
+        url: "v2.0-design.json",
+        name: "v2.0-design",
+      },
+    ],
+    dom_id: "#swagger-ui",
     deepLinking: true,
-    presets: [
-      SwaggerUIBundle.presets.apis,
-      SwaggerUIStandalonePreset
-    ],
-    plugins: [
-      SwaggerUIBundle.plugins.DownloadUrl
-    ],
-    layout: "StandaloneLayout"
+    presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
+    plugins: [SwaggerUIBundle.plugins.DownloadUrl],
+    layout: "StandaloneLayout",
   });
 
   //</editor-fold>
