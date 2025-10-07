@@ -8,7 +8,9 @@
   "paths": {
     "/auth/methods": {
       "get": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "summary": "Get the available authentication methods.",
         "description": "Get the available authentication methods.<br/><br/>\n\nThis call requires no authentication.",
         "operationId": "GetAuthMethodsV1.0+",
@@ -43,7 +45,9 @@
     },
     "/auth": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "summary": "Authenticate with the ERI server to get a token for further requests.",
         "description": "Authenticate with the data source to get a token for further requests.<br/><br/>\n\nThis call requires no authentication.",
         "operationId": "AuthenticateV1.0+",
@@ -84,7 +88,9 @@
     },
     "/dataSource": {
       "get": {
-        "tags": ["Data Source"],
+        "tags": [
+          "Data Source"
+        ],
         "summary": "Get the data source information for the given data source ID.",
         "description": "Get information about a data source.",
         "operationId": "GetDataSourceInfoV1.1+",
@@ -126,7 +132,9 @@
     },
     "/dataSource/list": {
       "get": {
-        "tags": ["Data Source"],
+        "tags": [
+          "Data Source"
+        ],
         "summary": "Get a list of available data sources for this ERI server.",
         "description": "Get a list of available data sources.",
         "operationId": "GetDataSourceListV1.1+",
@@ -161,7 +169,9 @@
     },
     "/embedding/info": {
       "get": {
-        "tags": ["Embedding"],
+        "tags": [
+          "Embedding"
+        ],
         "summary": "Get information about the embedding(s) used by the specified data source.",
         "description": "Get information about the embedding(s) used by a specific data source.",
         "operationId": "GetEmbeddingInfoV1.1+",
@@ -206,7 +216,9 @@
     },
     "/server": {
       "get": {
-        "tags": ["ERI Server"],
+        "tags": [
+          "ERI Server"
+        ],
         "summary": "Get information about the ERI server.",
         "description": "Get information about the ERI server.<br/><br/>\n\nThis call requires no authentication.",
         "operationId": "GetServerInfoV1.1+",
@@ -238,7 +250,9 @@
     },
     "/retrieval/info": {
       "get": {
-        "tags": ["Retrieval"],
+        "tags": [
+          "Retrieval"
+        ],
         "summary": "Get information about the retrieval processes implemented by the specified data source.",
         "description": "Get information about the retrieval processes implemented by this data source.",
         "operationId": "GetRetrievalInfoV20",
@@ -283,7 +297,9 @@
     },
     "/retrieval/announce": {
       "put": {
-        "tags": ["Retrieval"],
+        "tags": [
+          "Retrieval"
+        ],
         "summary": "Announce a new retrieval session for the specified data source.",
         "description": "Announce a new retrieval session for the specified data source.",
         "operationId": "AnnounceRetrievalV20",
@@ -337,7 +353,9 @@
     },
     "/retrieval/state": {
       "get": {
-        "tags": ["Retrieval"],
+        "tags": [
+          "Retrieval"
+        ],
         "summary": "Get the current state of the specified retrieval session.",
         "description": "Get the current state of the specified retrieval session.",
         "operationId": "GetRetrievalStateV20",
@@ -379,7 +397,9 @@
     },
     "/retrieval/processStep": {
       "post": {
-        "tags": ["Retrieval"],
+        "tags": [
+          "Retrieval"
+        ],
         "summary": "Query the next step in the retrieval process for a given session ID.",
         "description": "Query the next step in the retrieval process for a given session ID. This is used\nto allow for retrieval processes that require client-side actions, e.g.,\nuse the user's LLM to perform a task.",
         "operationId": "QueryProcessStepV20",
@@ -431,7 +451,9 @@
     },
     "/retrieval/results": {
       "get": {
-        "tags": ["Retrieval"],
+        "tags": [
+          "Retrieval"
+        ],
         "summary": "Get the retrieval results for the specified session ID.",
         "description": "Get the retrieval results for the specified session ID. You might need to call this\nmethod multiple times to get all results, depending on the number of results and\nthe maximum number of results returned per call.",
         "operationId": "GetResultsV20",
@@ -473,7 +495,9 @@
     },
     "/retrieval/chatCompletion": {
       "post": {
-        "tags": ["Retrieval"],
+        "tags": [
+          "Retrieval"
+        ],
         "summary": "Get a chat completion from the ERI server's LLM provider.",
         "description": "Get a chat completion from the ERI server's LLM provider, based on the provided messages.\nThe response is a stream of SSE (Server-Sent Events) messages. This API is compatible\nwith the OpenAI chat completion API. Differences are: (1) Only a list of messages\nis accepted as input. Other parameters, like model name, temperature, etc., are\nnot supported. (2) The response data structure might be a subset of the OpenAI\nresponse data structure.",
         "operationId": "ChatCompletionV20",
@@ -532,7 +556,9 @@
     },
     "/security/requirements": {
       "get": {
-        "tags": ["Security"],
+        "tags": [
+          "Security"
+        ],
         "summary": "Get the security requirements for this ERI server.",
         "description": "Represents the security requirements for this ERI server.<br/><br/>\n \nThe list of forbidden providers takes precedence over the list of allowed providers.\nIf a provider is in both lists, it is considered forbidden. Example: when you disallow all Asian\nproviders and allow all providers, the result is that all non-Asian providers are allowed.<br/><br/>\n\nWhen both lists are empty, it means that all providers are allowed.<br/><br/>\n\nYou can use the allowed IP ranges to restrict access to LLM providers from specific IP ranges.\nIf the list is empty, there are no restrictions on IP ranges. You can use CIDR notation to specify\nIP ranges (e.g., 192.168.1.0/30), single IP addresses (e.g., 192.168.0.1), or specify a range using\na start and end IP address (e.g., 10.0.0.1-10.0.0.255).<br/><br/>\n\nThis is useful if you want to allow access to LLM providers only from specific networks,\ne.g., your corporate network or a VPN. In practice, this means that only self-hosted\nor on-premise LLM providers can be used, as public LLM providers do not publish\ntheir IP addresses. You should use this feature in combination with allowed providers\nset to self-hosted providers only.",
         "operationId": "GetSecurityRequirementsV1.1+",
@@ -564,7 +590,9 @@
     },
     "/tools/list": {
       "get": {
-        "tags": ["Tools"],
+        "tags": [
+          "Tools"
+        ],
         "summary": "Get a list of available tools for this ERI server.",
         "description": "Get a list of available tools for this ERI server.",
         "operationId": "GetToolListV2.0+",
@@ -599,7 +627,9 @@
     },
     "/tools/execute": {
       "post": {
-        "tags": ["Tools"],
+        "tags": [
+          "Tools"
+        ],
         "summary": "Execute the specified tool with the given input.",
         "description": "Execute the specified tool with the given input.",
         "operationId": "ExecuteToolV2.0+",
@@ -654,7 +684,13 @@
   "components": {
     "schemas": {
       "AuthField": {
-        "enum": ["NONE", "USERNAME", "PASSWORD", "TOKEN", "KERBEROS_TICKET"],
+        "enum": [
+          "NONE",
+          "USERNAME",
+          "PASSWORD",
+          "TOKEN",
+          "KERBEROS_TICKET"
+        ],
         "type": "string",
         "description": "An authentication field.\n\n* `NONE` - No authentication field.\n* `USERNAME` - The username field.\n* `PASSWORD` - The password field.\n* `TOKEN` - The authentication token field.\n* `KERBEROS_TICKET` - The Kerberos ticket field.\n"
       },
@@ -674,7 +710,12 @@
         "description": "The mapping between an AuthField and the field name in the authentication request."
       },
       "AuthMethod": {
-        "enum": ["NONE", "KERBEROS", "USERNAME_PASSWORD", "TOKEN"],
+        "enum": [
+          "NONE",
+          "KERBEROS",
+          "USERNAME_PASSWORD",
+          "TOKEN"
+        ],
         "type": "string",
         "description": "An authentication method.\n\n* `NONE` - No authentication method.\n* `KERBEROS` - Kerberos authentication.\n* `USERNAME_PASSWORD` - Username and password authentication.\n* `TOKEN` - Token-based authentication.\n"
       },
@@ -748,6 +789,23 @@
         },
         "additionalProperties": false,
         "description": "A chat thread, which is a list of content blocks."
+      },
+      "Citation": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "The title of the citation.",
+            "nullable": true
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL of the citation.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "A citation for a piece of information."
       },
       "ContentBlock": {
         "type": "object",
@@ -1005,7 +1063,11 @@
         "description": "A response for a step in the retrieval process."
       },
       "RetrievalProcessStepType": {
-        "enum": ["NO_ACTION_NEEDED", "ASK_LLM", "DONE"],
+        "enum": [
+          "NO_ACTION_NEEDED",
+          "ASK_LLM",
+          "DONE"
+        ],
         "type": "string",
         "description": "The type of action the client should take for a retrieval process step.\n\n* `NO_ACTION_NEEDED` - No action is needed from the client.\n* `ASK_LLM` - The client should send a query to the LLM to get more information.\n* `DONE` - The retrieval process is complete.\n"
       },
@@ -1030,7 +1092,11 @@
         "description": "Represents the progress of a retrieval operation."
       },
       "RetrievalProgressType": {
-        "enum": ["PERCENTAGE", "NUMBER_OF_ITEMS", "CONTINUOUS"],
+        "enum": [
+          "PERCENTAGE",
+          "NUMBER_OF_ITEMS",
+          "CONTINUOUS"
+        ],
         "type": "string",
         "description": "The type of progress indication for a retrieval operation.\n\n* `PERCENTAGE` - The progress is indicated as a percentage (0-100).\n* `NUMBER_OF_ITEMS` - The progress is indicated as the number of items processed out of a total number of items.\n* `CONTINUOUS` - The progress is indicated as a continuous stream of updates. We might not know the\n            total amount of work to be done.\n"
       },
@@ -1089,6 +1155,14 @@
             "description": "A conclusive answer if this retrieval process is a conclusive answer\n            retrieval process (aka deep research). This will be null or empty when the retrieval process performed\n            classic retrieval.",
             "nullable": true
           },
+          "citations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Citation"
+            },
+            "description": "The list of citations. This list may be null or empty.",
+            "nullable": true
+          },
           "moreResultsAvailable": {
             "type": "boolean",
             "description": "Indicates whether more results are available for retrieval.\n            This is useful for pagination scenarios."
@@ -1108,7 +1182,11 @@
         "description": "Represents the state of a retrieval result.\n\n* `UNKNOWN` - The state of the retrieval result is unknown.\n* `PROCESS_STILL_ONGOING` - The retrieval process is still ongoing. Thus, results are not yet available.\n* `RESULTS_READY` - The retrieval process has completed, and results are ready to be accessed.\n* `NO_RESULTS_FOUND` - There are no results found or left to retrieve.\n"
       },
       "RetrievalState": {
-        "enum": ["NOT_STARTED", "ONGOING", "DONE"],
+        "enum": [
+          "NOT_STARTED",
+          "ONGOING",
+          "DONE"
+        ],
         "type": "string",
         "description": "Represents the state of a retrieval operation.\n\n* `NOT_STARTED` - The retrieval process has not started yet.\n* `ONGOING` - The retrieval process is ongoing.\n* `DONE` - The retrieval process has completed successfully.\n"
       },
@@ -1126,7 +1204,14 @@
         "description": "The status of a retrieval operation."
       },
       "Role": {
-        "enum": ["NONE", "UNKNOWN", "SYSTEM", "USER", "AI", "AGENT"],
+        "enum": [
+          "NONE",
+          "UNKNOWN",
+          "SYSTEM",
+          "USER",
+          "AI",
+          "AGENT"
+        ],
         "type": "string",
         "description": "Possible roles of a content block in a chat thread.\n\n* `NONE` - No role specified.\n* `UNKNOWN` - Role is unknown.\n* `SYSTEM` - System role, e.g., instructions to the AI model.\n* `USER` - User role, e.g., user input.\n* `AI` - AI role, e.g., AI-generated response.\n* `AGENT` - Content generated by an AI agent.\n"
       },
@@ -1242,7 +1327,7 @@
   },
   "security": [
     {
-      "ERI_Token": []
+      "ERI_Token": [ ]
     }
   ]
 }
